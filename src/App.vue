@@ -19,28 +19,28 @@ export default {
   components: {
     sellerHeader
   },
-  data () {
+  data() {
     return {
       seller: {}
     }
   },
-  created () {
-    axios.get('api/seller')
-      .then((res) => {
+  created() {
+    axios
+      .get('api/seller')
+      .then(res => {
         const data = res.data
         if (!data.errno === ERR_OK) {
           return
         }
         this.seller = data.data
-        console.log(this.seller)
+      })
+      .catch(err => {
+        throw err
       })
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 
 <style lang="stylus" scoped>
-
 </style>
