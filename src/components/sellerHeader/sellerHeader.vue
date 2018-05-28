@@ -16,7 +16,7 @@
         <span class="description">{{seller.supports[0].description}}</span>
       </div>
     </div>
-    <div class="bulletin">
+    <div class="bulletin" @click="showDetail">
       <i class="bulletin-img"></i>
       <div class="text">{{seller.bulletin}}</div>
       <span class="icon-keyboard_arrow_right"></span>
@@ -28,67 +28,55 @@
     <div class="bg">
       <img :src="seller.avatar" width="100%" height="100%" alt="">
     </div>
-    <div class="mask" v-if="isShowDetail"></div>
-    <div class="mask-content" v-if="isShowDetail" ref="maskContent">
-      <div style="min-height:100%;">
-        <div class="content-wrap">
-          <div class="content">
-            <div class="name">{{seller.name}}</div>
-            <div class="star-warp">
-              <star :size=48 :score="seller.score"></star>
-            </div>
-            <headline title="优惠信息"></headline>
-            <ul class="supports">
-              <li class="support-item" v-for="(support,index) in seller.supports" :key="index">
-                <i class="tag" :class="mapClass(support.type)"></i>
-                <div class="text">{{support.description}}</div>
-              </li>
-            </ul>
-            <headline title="商家公告"></headline>
-            <div class="bulletin-text">
-              {{seller.bulletin}}
+    <transition name="show">
+      <div class="mask-container" v-if="isShowDetail">
+        <div class="mask"></div>
+        <div class="mask-content">
+          <div class="content-wrap">
+            <div class="content">
+              <div class="name">{{seller.name}}</div>
+              <div class="star-warp">
+                <star :size=48 :score="seller.score"></star>
+              </div>
+              <headline title="优惠信息"></headline>
+              <ul class="supports">
+                <li class="support-item" v-for="(support,index) in seller.supports" :key="index">
+                  <i class="tag" :class="mapClass(support.type)"></i>
+                  <div class="text">{{support.description}}</div>
+                </li>
+              </ul>
+              <headline title="商家公告"></headline>
+              <div class="bulletin-text">
+                {{seller.bulletin}}
+              </div>
             </div>
           </div>
-        </div>
-        <div class="close">
-          <span class="icon-close"></span>
+          <div class="close" @click="hideDetail">
+            <span class="icon-close"></span>
+          </div>
         </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
 <script>
 import star from '../star/star'
 import headline from '../headline/headline'
-import BScroll from 'better-scroll'
 export default {
-  watch: {
-    isShowDetail(val) {
-      if (val) {
-        this.$nextTick(() => {
-          this._initBScroll()
-        })
-      }
-    }
-  },
   components: {
     star,
     headline
   },
   methods: {
-    _initBScroll() {
-      if (!this.maskContent) {
-        this.maskContent = new BScroll(this.$refs.maskContent, {})
-      } else {
-        this.maskContent.refresh()
-      }
-    },
     mapClass(index) {
       return this.classMap[index]
     },
     showDetail() {
       this.isShowDetail = true
+    },
+    hideDetail() {
+      this.isShowDetail = false
     }
   },
   data() {
@@ -235,22 +223,28 @@ export default {
     right: 0
     z-index: -1
     filter: blur(10px)
-  .mask
-    position: fixed
-    top: 0
-    bottom: 0
-    left: 0
-    right: 0
-    z-index: 100
-    background: rgba(7, 17, 27, 0.8)
-  .mask-content
-    position: fixed
-    left: 0
-    top: 0
-    width: 100%
-    height: 100%
-    z-index: 101
-    overflow: hidden
+  .mask-container
+    &.show-enter, &.show-leave-active
+      opacity: 0
+    &.show-enter-active, &.show-leave-active
+      transition: all 0.5s
+    .mask
+      position: fixed
+      top: 0
+      bottom: 0
+      left: 0
+      right: 0
+      z-index: 100
+      background: rgba(7, 17, 27, 0.8)
+      backdrop-filter: blur(10px)
+    .mask-content
+      position: fixed
+      left: 0
+      top: 0
+      width: 100%
+      height: 100%
+      z-index: 101
+      overflow: auto
     .content-wrap
       width: 80%
       min-height: 100%
@@ -302,6 +296,7 @@ export default {
     .close
       position: relative
       margin-top: -64px
+      height: 64px
       text-align: center
       .icon-close
         font-size: 32px
