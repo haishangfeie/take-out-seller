@@ -46,6 +46,8 @@ export default {
     &.star_24
       width: 10px
       height: 10px
+      margin-top:1px
+      margin-bottom:1px
       background-size: 10px 10px
       &.half
         bg-image('./star24_half')
@@ -56,6 +58,8 @@ export default {
     &.star_36
       width: 15px
       height: 15px
+      margin-top:2px
+      margin-bottom:1px
       background-size: 15px 15px
       &.half
         bg-image('./star36_half')
@@ -66,6 +70,8 @@ export default {
     &.star_48
       width: 20px
       height: 20px
+      margin-top:2px
+      margin-bottom:2px
       background-size: 20px 20px
       &.half
         bg-image('./star48_half')

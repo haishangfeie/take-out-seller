@@ -30,28 +30,29 @@
     </div>
     <div class="mask" v-if="isShowDetail"></div>
     <div class="mask-content" v-if="isShowDetail" ref="maskContent">
-      <div class="content-wrap">
-        <div class="content">
-          <div class="name">{{seller.name}}</div>
-          <div class="star-warp">
-            <star :size=48 :score="seller.score"></star>
+      <div style="min-height:100%;">
+        <div class="content-wrap">
+          <div class="content">
+            <div class="name">{{seller.name}}</div>
+            <div class="star-warp">
+              <star :size=48 :score="seller.score"></star>
+            </div>
+            <headline title="优惠信息"></headline>
+            <ul class="supports">
+              <li class="support-item" v-for="(support,index) in seller.supports" :key="index">
+                <i class="tag" :class="mapClass(support.type)"></i>
+                <div class="text">{{support.description}}</div>
+              </li>
+            </ul>
+            <headline title="商家公告"></headline>
+            <div class="bulletin-text">
+              {{seller.bulletin}}
+            </div>
           </div>
-          <headline title="优惠信息"></headline>
-          <ul class="supports">
-            <li class="support-item" v-for="(support,index) in seller.supports" :key="index">
-              <i class="tag" :class="mapClass(support.type)"></i>
-              <div class="text">{{support.description}}</div>
-            </li>
-          </ul>
-          <headline title="商家公告"></headline>
-          <div class="bulletin-text">
-            {{seller.bulletin}}
-          </div>
-
         </div>
-      </div>
-      <div class="close">
-        <span class="icon-close"></span>
+        <div class="close">
+          <span class="icon-close"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -265,7 +266,7 @@ export default {
           font-weight: 700
           color: #fff
         .star-warp
-          margin: 18px 0 30px
+          margin: 16px 0 28px
           text-align: center
         .supports
           .support-item
