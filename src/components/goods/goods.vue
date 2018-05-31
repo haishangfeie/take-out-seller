@@ -3,7 +3,7 @@
     <div class="goods">
       <div class="goods-left" ref="goodsLeft">
         <ul class="list">
-          <li v-for="(item,index) in goods" :key="index" class="item">
+          <li v-for="(item,index) in goods" :key="index" class="item" :class="{highlight:index===nowIndex}" ref="leftItem" @click="selFoodsItem(index,$event)">
             <div class="content">
               <i v-show="item.type!==-1" class="tag" :class="mapClass(item.type)"></i>
               <span class="text">{{item.name}}</span>
@@ -13,7 +13,7 @@
       </div>
       <div class="goods-right" ref="goodsRight">
         <ul class="list">
-          <li class="item" v-for="(item,item_index) in goods" :key="item_index">
+          <li class="item" v-for="(item,item_index) in goods" :key="item_index" ref="listItem">
             <div class="title">{{item.name}}</div>
             <ul class="good-list">
               <li class="good" v-for="(good,good_index) in item.foods" :key="good_index">
@@ -52,9 +52,55 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this._initBScroll()
+      this.goodsRight.on('scroll', pos => {
+        if (pos.y > 0) {
+          this.nowIndex = 0
+          this._follow(this.nowIndex)
+          return
+        }
+        const posY = Math.abs(pos.y)
+        if (posY > this.heightArr[this.heightArr.length - 1]) {
+          this.nowIndex = this.heightArr.length - 2
+          this._follow(this.nowIndex)
+          return
+        }
+        for (let i = 0, len = this.heightArr.length; i < len; i++) {
+          if (posY > this.heightArr[i] && posY < this.heightArr[i + 1]) {
+            this.nowIndex = i
+            this._follow(this.nowIndex)
+          }
+        }
+      })
     })
   },
+  watch: {
+    goods(goods) {
+      if (goods && goods.length > 0) {
+        this.$nextTick(() => {
+          this.heightArr = this.getListItemHeight()
+        })
+      }
+    }
+  },
   methods: {
+    getListItemHeight() {
+      // 获取每类食品模块的高度区间
+      let heightArr = []
+      const offsetTop = this.$refs.listItem[0].getBoundingClientRect().y
+      for (let i = 0, len = this.$refs.listItem.length; i < len; i++) {
+        heightArr.push(
+          this.$refs.listItem[i].getBoundingClientRect().y - offsetTop
+        )
+        if (i === len - 1) {
+          heightArr.push(
+            this.$refs.listItem[i].getBoundingClientRect().y -
+              offsetTop +
+              this.$refs.listItem[i].getBoundingClientRect().height
+          )
+        }
+      }
+      return heightArr
+    },
     // 匹配对应的图标样式
     mapClass(index) {
       return this.classMap[index]
@@ -64,24 +110,33 @@ export default {
         click: true,
         probeType: 3
       })
-      // this.goodsRight.on('scroll', (pos) => {
-      //   // console.log(pos.y)
-      //   // for (let i = 0, len = this.$refs.title.length; i < len; i++) {
-      //   //   const ele = this.$refs.title[i]
-      //   //   console.log(ele.getBoundingClientRect())
-      //   // }
-      //   console.log(this.$refs.title[0].getBoundingClientRect())
-      // })
       this.goodsLeft = new BScroll(this.$refs.goodsLeft, {
         click: true
       })
+    },
+    // 让左侧侧边栏跟随滚动
+    _follow(index) {
+      const ele = this.$refs.leftItem[index]
+      this.goodsLeft.scrollToElement(ele, 300, 0, -100)
+    },
+    // 高亮对应的左侧列表，并让右侧的列表滚动至对应的位置
+    selFoodsItem(index, event) {
+      // 原生的点击不触发（好像现在的不添加这句代码也不会触发了）
+      if(!event._constructed){
+        return
+      }
+      // 让右侧的滚动
+      const ele = this.$refs.listItem[index]
+      this.goodsRight.scrollToElement(ele,300)
     }
   },
   data() {
     return {
       classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee'],
       goodsRight: null,
-      goodsLeft: null
+      goodsLeft: null,
+      heightArr: [],
+      nowIndex: 0
     }
   }
 }
@@ -113,6 +168,8 @@ export default {
           padding: 0 12px
           font-size: 0
           background: #f3f5f7
+          &.highlight
+            background: #fff
           .content
             display: table-cell
             vertical-align: middle
