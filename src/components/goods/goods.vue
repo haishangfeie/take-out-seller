@@ -1,42 +1,52 @@
 <template>
-  <div class="goods-wrap">
-    <div class="goods">
-      <div class="goods-left" ref="goodsLeft">
-        <ul class="list">
-          <li v-for="(item,index) in goods" :key="index" class="item" :class="{highlight:index===nowIndex}" ref="leftItem" @click="selFoodsItem(index,$event)">
-            <div class="content">
-              <i v-show="item.type!==-1" class="tag" :class="mapClass(item.type)"></i>
-              <span class="text">{{item.name}}</span>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div class="goods-right" ref="goodsRight">
-        <ul class="list">
-          <li class="item" v-for="(item,item_index) in goods" :key="item_index" ref="listItem">
-            <div class="title">{{item.name}}</div>
-            <ul class="good-list">
-              <li class="good" v-for="(good,good_index) in item.foods" :key="good_index">
-                <img class="icon" :src="good.icon" alt="">
-                <div class="content">
-                  <div class="name">{{good.name}}</div>
-                  <div class="description" v-show="good.description!==''">{{good.description}}</div>
-                  <div class="sell">
-                    <span class="sellCount">月售{{good.sellCount}}份</span>
-                    <span class="rating">好评率{{good.rating}}%</span>
+  <div>
+    <div class="goods-wrap">
+      <div class="goods">
+        <div class="goods-left" ref="goodsLeft">
+          <ul class="list">
+            <li v-for="(item,index) in goods" :key="index" class="item" :class="{highlight:index===nowIndex}" ref="leftItem" @click="selFoodsItem(index,$event)">
+              <div class="content">
+                <i v-show="item.type!==-1" class="tag" :class="mapClass(item.type)"></i>
+                <span class="text">{{item.name}}</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="goods-right" ref="goodsRight">
+          <ul class="list">
+            <li class="item" v-for="(item,item_index) in goods" :key="item_index" ref="listItem">
+              <div class="title">{{item.name}}</div>
+              <ul class="good-list">
+                <li class="good" v-for="(good,good_index) in item.foods" :key="good_index">
+                  <img class="icon" :src="good.icon" alt="">
+                  <div class="content">
+                    <div class="name">{{good.name}}</div>
+                    <div class="description" v-show="good.description!==''">{{good.description}}</div>
+                    <div class="sell">
+                      <span class="sellCount">月售{{good.sellCount}}份</span>
+                      <span class="rating">好评率{{good.rating}}%</span>
+                    </div>
+                    <div class="price-wrap">
+                      <span class="price">￥</span>
+                      <span class="price-num">{{good.price}}</span>
+                      <span class="oldPrice" v-show="good.oldPrice!==''">￥</span>
+                      <span class="oldPrice-num">{{good.oldPrice}}</span>
+                    </div>
                   </div>
-                  <div class="price-wrap">
-                    <span class="price">￥</span>
-                    <span class="price-num">{{good.price}}</span>
-                    <span class="oldPrice" v-show="good.oldPrice!==''">￥</span>
-                    <span class="oldPrice-num">{{good.oldPrice}}</span>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </li>
-        </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
+    </div>
+    <div class="shopcart-wrap">
+      <div class="shopcart-icon-wrap">
+        <span class="icon-shopping_cart"></span>
+      </div>
+      <div class="price"></div>
+      <div class="text"></div>
+      <button class="btn">￥20起送</button>
     </div>
   </div>
 </template>
@@ -59,13 +69,13 @@ export default {
           return
         }
         const posY = Math.abs(pos.y)
-        if (posY > this.heightArr[this.heightArr.length - 1]) {
+        if (posY >= this.heightArr[this.heightArr.length - 1]) {
           this.nowIndex = this.heightArr.length - 2
           this._follow(this.nowIndex)
           return
         }
         for (let i = 0, len = this.heightArr.length; i < len; i++) {
-          if (posY > this.heightArr[i] && posY < this.heightArr[i + 1]) {
+          if (posY >= this.heightArr[i] && posY < this.heightArr[i + 1]) {
             this.nowIndex = i
             this._follow(this.nowIndex)
           }
@@ -119,15 +129,15 @@ export default {
       const ele = this.$refs.leftItem[index]
       this.goodsLeft.scrollToElement(ele, 300, 0, -100)
     },
-    // 高亮对应的左侧列表，并让右侧的列表滚动至对应的位置
+    // 点击左侧列表，高亮对应的左侧列表，并让右侧的列表滚动至对应的位置
     selFoodsItem(index, event) {
       // 原生的点击不触发（好像现在的不添加这句代码也不会触发了）
-      if(!event._constructed){
+      if (!event._constructed) {
         return
       }
       // 让右侧的滚动
       const ele = this.$refs.listItem[index]
-      this.goodsRight.scrollToElement(ele,300)
+      this.goodsRight.scrollToElement(ele, 300)
     }
   },
   data() {
@@ -145,7 +155,7 @@ export default {
 <style lang="stylus" scoped>
 @import '../../common/stylus/mixin.styl'
 .goods-wrap
-  position: absolute
+  position: fixed
   top: 174px
   bottom: 48px
   width: 100%
@@ -256,4 +266,10 @@ export default {
                     text-decoration: line-through
                   .oldPrice-num
                     font-weight: bold
+.shopcart-wrap
+  position fixed
+  bottom 0
+  width 100%
+  height 48px
+  background rgba(0,0,0,.8)
 </style>

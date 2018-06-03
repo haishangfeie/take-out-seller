@@ -107,6 +107,7 @@ export default {
   height: 134px
   padding: 24px 0 0 24px
   background: rgba(7, 17, 27, 0.5)
+  overflow: hidden
   .header-left
     flex: 0 0 64px
     width: 64px
