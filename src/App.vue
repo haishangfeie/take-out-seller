@@ -8,16 +8,19 @@
       <router-link class="nav-item" active-class="highlight" to="/sellers">商家</router-link>
     </div>
     <router-view :goods="goods"></router-view>
+    <shopcart></shopcart>
   </div>
 </template>
 
 <script>
 import sellerHeader from './components/sellerHeader/sellerHeader'
+import shopcart from 'components/shopcart/shopcart'
 import axios from 'axios'
 const ERR_OK = 0
 export default {
   components: {
-    sellerHeader
+    sellerHeader,
+    shopcart
   },
   data() {
     return {

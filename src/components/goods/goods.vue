@@ -1,52 +1,60 @@
 <template>
-  <div>
-    <div class="goods-wrap">
-      <div class="goods">
-        <div class="goods-left" ref="goodsLeft">
-          <ul class="list">
-            <li v-for="(item,index) in goods" :key="index" class="item" :class="{highlight:index===nowIndex}" ref="leftItem" @click="selFoodsItem(index,$event)">
-              <div class="content">
-                <i v-show="item.type!==-1" class="tag" :class="mapClass(item.type)"></i>
-                <span class="text">{{item.name}}</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="goods-right" ref="goodsRight">
-          <ul class="list">
-            <li class="item" v-for="(item,item_index) in goods" :key="item_index" ref="listItem">
-              <div class="title">{{item.name}}</div>
-              <ul class="good-list">
-                <li class="good" v-for="(good,good_index) in item.foods" :key="good_index">
-                  <img class="icon" :src="good.icon" alt="">
-                  <div class="content">
-                    <div class="name">{{good.name}}</div>
-                    <div class="description" v-show="good.description!==''">{{good.description}}</div>
-                    <div class="sell">
-                      <span class="sellCount">月售{{good.sellCount}}份</span>
-                      <span class="rating">好评率{{good.rating}}%</span>
-                    </div>
-                    <div class="price-wrap">
-                      <span class="price">￥</span>
-                      <span class="price-num">{{good.price}}</span>
-                      <span class="oldPrice" v-show="good.oldPrice!==''">￥</span>
-                      <span class="oldPrice-num">{{good.oldPrice}}</span>
-                    </div>
+  <div class="goods-wrap">
+    <div class="goods">
+      <div class="goods-left"
+           ref="goodsLeft">
+        <ul class="list">
+          <li v-for="(item,index) in goods"
+              :key="index"
+              class="item"
+              :class="{highlight:index===nowIndex}"
+              ref="leftItem"
+              @click="selFoodsItem(index,$event)">
+            <div class="content">
+              <i v-show="item.type!==-1"
+                 class="tag"
+                 :class="mapClass(item.type)"></i>
+              <span class="text">{{item.name}}</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="goods-right"
+           ref="goodsRight">
+        <ul class="list">
+          <li class="item"
+              v-for="(item,item_index) in goods"
+              :key="item_index"
+              ref="listItem">
+            <div class="title">{{item.name}}</div>
+            <ul class="good-list">
+              <li class="good"
+                  v-for="(good,good_index) in item.foods"
+                  :key="good_index">
+                <img class="icon"
+                     :src="good.icon"
+                     alt="">
+                <div class="content">
+                  <div class="name">{{good.name}}</div>
+                  <div class="description"
+                       v-show="good.description!==''">{{good.description}}</div>
+                  <div class="sell">
+                    <span class="sellCount">月售{{good.sellCount}}份</span>
+                    <span class="rating">好评率{{good.rating}}%</span>
                   </div>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
+                  <div class="price-wrap">
+                    <span class="price">￥</span>
+                    <span class="price-num">{{good.price}}</span>
+                    <span class="oldPrice"
+                          v-show="good.oldPrice!==''">￥</span>
+                    <span class="oldPrice-num">{{good.oldPrice}}</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
-    </div>
-    <div class="shopcart-wrap">
-      <div class="shopcart-icon-wrap">
-        <span class="icon-shopping_cart"></span>
-      </div>
-      <div class="price"></div>
-      <div class="text"></div>
-      <button class="btn">￥20起送</button>
     </div>
   </div>
 </template>
@@ -266,10 +274,4 @@ export default {
                     text-decoration: line-through
                   .oldPrice-num
                     font-weight: bold
-.shopcart-wrap
-  position fixed
-  bottom 0
-  width 100%
-  height 48px
-  background rgba(0,0,0,.8)
 </style>
